@@ -1,5 +1,5 @@
 {
-  description = "Paper 1.26.2 template plugin — JDK 21 + Gradle";
+  description = "Paper 1.26.2 Kotlin template — JDK 21 + Gradle + HikariCP";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -20,8 +20,9 @@
 
           shellHook = ''
             export JAVA_HOME=${jdk}
-            echo "Paper template — java $(java -version 2>&1 | head -n1) | gradle $(gradle --version | grep Gradle)"
-            echo "  gradle build  → build/libs/template-plugin-1.0.0.jar"
+            echo "Paper Kotlin template — java $(java -version 2>&1 | head -n1) | gradle $(gradle --version | grep Gradle) | kotlin $(kotlinc -version 2>&1 || echo 'via gradle')"
+            echo "  gradle shadowJar → build/libs/template-plugin-1.0.0.jar"
+            echo "  docs: docs/DATABASE.md | config: src/main/resources/config.yml | docker: docker-compose.yml"
           '';
         };
 
