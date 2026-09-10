@@ -1,8 +1,7 @@
 {
   description = "Paper 1.26.2 Kotlin template — JDK 21 + Gradle + HikariCP";
-  # allow jetbrains.idea (unfree) + relaxed sandbox for gradle network fetch in `nix build`
+  # relaxed sandbox for gradle network fetch in `nix build` (allowUnfree handled via import config)
   nixConfig = {
-    allowUnfree = true;
     sandbox = "relaxed";
   };
 
@@ -12,7 +11,8 @@
   };
 
   outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
+    # nixpkgs 26.11 dropped x86_64-darwin; use only supported systems (keep aarch64-darwin for Apple Silicon)
+    flake-utils.lib.eachSystem [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ] (system:
       let
         pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
         # JDK 21 — Paper 1.26.2 requires Java 21
