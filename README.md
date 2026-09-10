@@ -55,13 +55,24 @@ Slim jar: remove unwanted drivers in `build.gradle.kts` (`mysql-connector-j` / `
 
 ## Dev
 ```bash
-nix develop      # jdk21 + gradle8 shell
-gradle shadowJar # fat jar (manual, no shadow plugin ASM issue) →  build/libs/*.jar
+nix develop      # jdk21 + gradle8 + jetbrains.idea (native) + formatters
+gradle shadowJar # fat jar (manual) →  build/libs/*.jar
 gradle build     # also builds shadowJar
+gradle spotlessApply # Kotlin fmt (ktlint 1.5.0 native)
+gradle spotlessCheck # Kotlin fmt check
+nix fmt          # Nix fmt (nixfmt native)
+nix run .#idea   # JetBrains IDEA (jetbrains.idea)
+gradle idea      # gen .idea/.iml
 
 nix build        # via flake → result/*.jar
 ./gradlew -PpaperVersion=1.26.2-R0.1-SNAPSHOT shadowJar # use once Paper 1.26.2 published
 ```
+
+## Formatter
+- **Kotlin** → `com.diffplug.spotless` + `ktlint 1.5.0` (Kotlin native style, `KOTLIN_OFFICIAL`). Config in `build.gradle.kts` + `.editorconfig` (4 spaces, 120+). Run `gradle spotlessApply`.
+- **Nix** → `nixfmt` (native Rust, `formatter = pkgs.nixfmt` in `flake.nix`). Run `nix fmt`.
+- **IDEA** → `.idea/codeStyles/Project.xml` = `KOTLIN_OFFICIAL`, `gradle.xml`/`misc.xml` JDK21. `.editorconfig` synced for both.
+- **Why native?** Nix fmt = native (`nixfmt`), Kotlin fmt = `ktlint` native binary via `pkgs.ktlint` + Spotless JVM wrapper (JVM required for Paper API; plugin itself must be Kotlin-JVM, not Kotlin/Native — Paper is JVM-only).
 
 ## Notes
 - `src/main/resources/plugin.yml` + `paper-plugin.yml` — Paper prefers `paper-plugin.yml`.

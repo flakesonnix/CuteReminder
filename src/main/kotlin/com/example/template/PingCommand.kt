@@ -6,7 +6,9 @@ import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
 
-class PingCommand(private val plugin: TemplatePlugin?) : CommandExecutor, TabCompleter {
+class PingCommand(private val plugin: TemplatePlugin?) :
+    CommandExecutor,
+    TabCompleter {
 
     constructor() : this(null)
 
@@ -57,7 +59,12 @@ class PingCommand(private val plugin: TemplatePlugin?) : CommandExecutor, TabCom
         }
     }
 
-    override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<out String>): List<String> {
+    override fun onTabComplete(
+        sender: CommandSender,
+        command: Command,
+        alias: String,
+        args: Array<out String>,
+    ): List<String> {
         if (args.size == 1 && sender.hasPermission("template.ping.others")) {
             val prefix = args[0].lowercase()
             return sender.server.onlinePlayers

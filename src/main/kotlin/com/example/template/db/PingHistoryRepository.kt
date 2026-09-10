@@ -7,7 +7,7 @@ import java.util.logging.Logger
 
 class PingHistoryRepository(
     private val db: Database,
-    private val log: Logger
+    private val log: Logger,
 ) {
 
     data class Entry(val uuid: UUID, val name: String, val ping: Int, val at: String)
@@ -42,7 +42,7 @@ class PingHistoryRepository(
                                 UUID.fromString(rs.getString(1)),
                                 rs.getString(2),
                                 rs.getInt(3),
-                                rs.getString(4)
+                                rs.getString(4),
                             )
                         }
                     }

@@ -5,10 +5,7 @@ import java.util.UUID
 import java.util.logging.Level
 import java.util.logging.Logger
 
-class PlayerDataRepository(
-    private val db: Database,
-    private val log: Logger
-) {
+class PlayerDataRepository(private val db: Database, private val log: Logger) {
 
     fun upsert(uuid: UUID, name: String) {
         val sqlite = db.isSqlite()

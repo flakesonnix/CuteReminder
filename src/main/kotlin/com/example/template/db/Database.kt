@@ -2,11 +2,11 @@ package com.example.template.db
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 import java.sql.Connection
 import java.sql.SQLException
 import java.util.logging.Level
+import org.bukkit.plugin.java.JavaPlugin
 
 /**
  * HikariCP-backed DB. Supports sqlite (default), mysql, postgresql.
@@ -67,7 +67,10 @@ class Database(private val plugin: JavaPlugin) {
         val db = plugin.config.getString("database.mysql.database", "minecraft")!!
         val user = plugin.config.getString("database.mysql.user", "root")!!
         val pass = plugin.config.getString("database.mysql.password", "")!!
-        val params = plugin.config.getString("database.mysql.params", "useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=utf8mb4")!!
+        val params = plugin.config.getString(
+            "database.mysql.params",
+            "useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=utf8mb4",
+        )!!
         val url = "jdbc:mysql://$host:$port/$db?$params"
         cfg.jdbcUrl = url
         cfg.username = user
@@ -109,8 +112,11 @@ class Database(private val plugin: JavaPlugin) {
               last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
             """.trimIndent(),
-            if (isSqlite()) "CREATE INDEX IF NOT EXISTS idx_ping_uuid ON ping_history(player_uuid)"
-            else "CREATE INDEX idx_ping_uuid ON ping_history(player_uuid)"
+            if (isSqlite()) {
+                "CREATE INDEX IF NOT EXISTS idx_ping_uuid ON ping_history(player_uuid)"
+            } else {
+                "CREATE INDEX idx_ping_uuid ON ping_history(player_uuid)"
+            },
         )
 
         try {

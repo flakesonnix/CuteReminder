@@ -9,20 +9,33 @@
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        pkgs = import nixpkgs { inherit system; };
+        pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
         # JDK 21 — Paper 1.26.2 requires Java 21
         jdk = pkgs.jdk21;
         gradle = pkgs.gradle_8;
+        # jetbrains.idea — as requested: pkgs.jetbrains.idea (fallback to idea-community) — unfree → allowUnfree=true
+        ideaPkg = if pkgs.jetbrains ? idea then pkgs.jetbrains.idea else pkgs.jetbrains.idea-community;
+        # formatters — native where possible (nixfmt Rust, ktlint Kotlin-native if available)
+        nixFmt = pkgs.nixfmt; # native (was nixfmt-rfc-style)
+        ktFmtCheck = pkgs.ktlint; # native wrapper, prefer `gradle spotlessApply` for project fmt
       in {
         devShells.default = pkgs.mkShell {
           name = "paper-template";
-          buildInputs = [ jdk gradle pkgs.git pkgs.bash ];
+          buildInputs = [
+            jdk gradle pkgs.git pkgs.bash
+            ideaPkg
+            nixFmt ktFmtCheck
+          ];
 
           shellHook = ''
             export JAVA_HOME=${jdk}
-            echo "Paper Kotlin template — java $(java -version 2>&1 | head -n1) | gradle $(gradle --version | grep Gradle) | kotlin $(kotlinc -version 2>&1 || echo 'via gradle')"
-            echo "  gradle shadowJar → build/libs/template-plugin-1.0.0.jar"
-            echo "  docs: docs/DATABASE.md | config: src/main/resources/config.yml | docker: docker-compose.yml"
+            echo "Paper Kotlin template — java $(java -version 2>&1 | head -n1) | gradle $(gradle --version | grep Gradle)"
+            echo "  gradle shadowJar        → build/libs/template-plugin-1.0.0.jar (Kotlin-JVM, Paper API)"
+            echo "  gradle spotlessApply    → Kotlin fmt (ktlint 1.5.0 native)"
+            echo "  gradle spotlessCheck    → Kotlin fmt check"
+            echo "  nix fmt                 → Nix fmt (nixfmt native)"
+            echo "  gradle idea             → generate JetBrains .idea/.iml"
+            echo "  IDEA: nix develop -c idea . &  |  nix run .#idea (jetbrains.idea native)"
           '';
         };
 
@@ -41,5 +54,11 @@
             cp build/libs/*.jar $out/ 2>/dev/null || cp -r build $out/
           '';
         };
+
+        # `nix run .#idea` → JetBrains IDEA (jetbrains.idea)
+        packages.idea = ideaPkg;
+
+        # `nix fmt` → format all Nix files (flake.nix etc.)
+        formatter = nixFmt;
       });
 }
