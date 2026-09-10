@@ -46,9 +46,9 @@ jobs:
 
       - name: Nix format check
         run: |
-          nix fmt -- --check || (echo "::error::Nix fmt failed — run 'nix fmt' locally"; exit 1)
-          # fallback: direct nixfmt check
-          nix develop --accept-flake-config --command nixfmt --check flake.nix || true
+          # nix fmt via flake formatter is impure (needs --accept-flake-config) + bare stdin warning,
+          # use direct nixfmt check on flake.nix (native, no JVM) for reliable CI
+          nix develop --accept-flake-config --command nixfmt --check flake.nix || (echo "::error::Nix fmt failed — run 'nix fmt' or 'nix develop -c nixfmt flake.nix' locally"; exit 1)
 
       - name: Build plugin (Gradle via Nix devShell)
         run: nix develop --accept-flake-config --command gradle shadowJar --no-daemon

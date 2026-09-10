@@ -10,11 +10,20 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      flake-utils,
+    }:
     # nixpkgs 26.11 dropped x86_64-darwin; use only supported systems (keep aarch64-darwin for Apple Silicon)
-    flake-utils.lib.eachSystem [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ] (system:
+    flake-utils.lib.eachSystem [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ] (
+      system:
       let
-        pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
+        pkgs = import nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
+        };
         # JDK 21 — Paper 1.26.2 requires Java 21
         jdk = pkgs.jdk21;
         gradle = pkgs.gradle_8;
@@ -23,13 +32,18 @@
         # formatters — native where possible (nixfmt Rust, ktlint Kotlin-native if available)
         nixFmt = pkgs.nixfmt; # native (was nixfmt-rfc-style)
         ktFmtCheck = pkgs.ktlint; # native wrapper, prefer `gradle spotlessApply` for project fmt
-      in {
+      in
+      {
         devShells.default = pkgs.mkShell {
           name = "paper-template";
           buildInputs = [
-            jdk gradle pkgs.git pkgs.bash
+            jdk
+            gradle
+            pkgs.git
+            pkgs.bash
             ideaPkg
-            nixFmt ktFmtCheck
+            nixFmt
+            ktFmtCheck
           ];
 
           shellHook = ''
@@ -50,7 +64,11 @@
           pname = "template-plugin";
           version = "1.0.0";
           src = ./.;
-          nativeBuildInputs = [ jdk gradle pkgs.cacert ];
+          nativeBuildInputs = [
+            jdk
+            gradle
+            pkgs.cacert
+          ];
           __noChroot = true;
           # __impure = true; # uncomment if nix >=2.18 requires explicit impure for network
           buildPhase = ''
@@ -69,5 +87,6 @@
 
         # `nix fmt` → format all Nix files (flake.nix etc.)
         formatter = nixFmt;
-      });
+      }
+    );
 }
