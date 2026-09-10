@@ -1,0 +1,20 @@
+name: TemplatePlugin
+version: '1.0.0'
+main: com.example.template.TemplatePlugin
+api-version: '1.21'
+prefix: Template
+author: Example
+description: Template Paper plugin — ping command
+commands:
+  ping:
+    description: Show latency
+    usage: /ping [player]
+    permission: template.ping
+    permission-message: You don't have permission!
+permissions:
+  template.ping:
+    description: Use /ping for self
+    default: true
+  template.ping.others:
+    description: Check others' ping
+    default: op

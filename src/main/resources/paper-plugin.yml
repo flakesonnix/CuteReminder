@@ -1,0 +1,21 @@
+name: TemplatePlugin
+version: '1.0.0'
+main: com.example.template.TemplatePlugin
+api-version: '1.21'
+# Target Paper 1.26.2 — bump api-version if Paper requires
+description: Template Paper plugin — ping command
+prefix: Template
+author: Example
+permissions:
+  template.ping:
+    description: Use /ping for self
+    default: true
+  template.ping.others:
+    description: Check others' ping
+    default: op
+commands:
+  ping:
+    description: Show latency
+    usage: /ping [player]
+    permission: template.ping
+    permission-message: You don't have permission!
