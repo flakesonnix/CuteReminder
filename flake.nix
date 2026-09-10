@@ -1,5 +1,10 @@
 {
   description = "Paper 1.26.2 Kotlin template — JDK 21 + Gradle + HikariCP";
+  # allow jetbrains.idea (unfree) + relaxed sandbox for gradle network fetch in `nix build`
+  nixConfig = {
+    allowUnfree = true;
+    sandbox = "relaxed";
+  };
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -40,13 +45,17 @@
         };
 
         # `nix build` → plugin jar (gradle build without wrapper)
+        # Gradle needs network to fetch plugins/deps → allow impure/noChroot (template convenience)
         packages.default = pkgs.stdenv.mkDerivation {
           pname = "template-plugin";
           version = "1.0.0";
           src = ./.;
-          nativeBuildInputs = [ jdk gradle ];
+          nativeBuildInputs = [ jdk gradle pkgs.cacert ];
+          __noChroot = true;
+          # __impure = true; # uncomment if nix >=2.18 requires explicit impure for network
           buildPhase = ''
             export GRADLE_USER_HOME=$TMPDIR/.gradle
+            export HOME=$TMPDIR
             gradle --no-daemon -x test build
           '';
           installPhase = ''
