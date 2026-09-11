@@ -38,6 +38,7 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.26.3")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.11.3")
     testImplementation("io.papermc.paper:paper-api:$paperVersion")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
 
     // Ktor client + serialization for /joke
     implementation("io.ktor:ktor-client-core:3.1.2")

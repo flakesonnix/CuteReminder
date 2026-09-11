@@ -31,14 +31,17 @@ class JokeCommand(
 
         scope.launch {
             val joke = jokeApiClient.fetchRandomJoke()
-            plugin.server.scheduler.runTask(plugin) {
-                if (joke == null) {
-                    sender.sendMessage("§cCould not fetch a joke. Try again later.")
-                    return@runTask
-                }
-                sender.sendMessage("§e${joke.setup}")
-                sender.sendMessage("§a${joke.punchline}")
-            }
+            plugin.server.scheduler.runTask(
+                plugin,
+                Runnable {
+                    if (joke == null) {
+                        sender.sendMessage("§cCould not fetch a joke. Try again later.")
+                        return@Runnable
+                    }
+                    sender.sendMessage("§e${joke.setup}")
+                    sender.sendMessage("§a${joke.punchline}")
+                },
+            )
         }
         return true
     }

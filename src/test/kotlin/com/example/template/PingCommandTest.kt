@@ -30,7 +30,7 @@ class PingCommandTest {
         val command = mockk<Command>(relaxed = true)
         val result = cmd.onCommand(sender, command, "ping", arrayOf())
         assertTrue(result)
-        verify { sender.sendMessage(match { it.contains("42") }) }
+        verify { sender.sendMessage(match<String> { it.contains("42") }) }
     }
 
     @Test
