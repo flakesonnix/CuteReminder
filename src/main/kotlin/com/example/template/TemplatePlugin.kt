@@ -1,5 +1,7 @@
 package com.example.template
 
+import com.example.template.api.JokeApiClient
+import com.example.template.commands.JokeCommand
 import com.example.template.db.Database
 import com.example.template.db.PingHistoryRepository
 import com.example.template.db.PlayerDataRepository
@@ -13,6 +15,7 @@ class TemplatePlugin : JavaPlugin() {
         private set
     lateinit var playerData: PlayerDataRepository
         private set
+    private lateinit var jokeApiClient: JokeApiClient
 
     override fun onEnable() {
         saveDefaultConfig()
@@ -29,9 +32,11 @@ class TemplatePlugin : JavaPlugin() {
         pingHistory = PingHistoryRepository(database, logger)
         playerData = PlayerDataRepository(database, logger)
 
+        jokeApiClient = JokeApiClient()
+
         // --- listener ---
         server.pluginManager.registerEvents(PlayerJoinListener(this), this)
-
+        getCommand("joke")?.setExecutor(JokeCommand(this, jokeApiClient))
         // --- cmd ---
         val cmd = getCommand("ping")
         if (cmd != null) {
@@ -45,6 +50,7 @@ class TemplatePlugin : JavaPlugin() {
     }
 
     override fun onDisable() {
+        if (::jokeApiClient.isInitialized) jokeApiClient.close()
         if (::database.isInitialized) database.close()
         logger.info("TemplatePlugin disabled")
     }

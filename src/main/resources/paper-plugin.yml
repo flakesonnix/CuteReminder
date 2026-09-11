@@ -2,8 +2,7 @@ name: TemplatePlugin
 version: '1.0.0'
 main: com.example.template.TemplatePlugin
 api-version: '1.21'
-# Target Paper 1.26.2 — bump api-version if Paper requires
-description: Template Paper plugin — ping command
+description: Template Paper plugin — ping + joke commands
 prefix: Template
 author: Example
 permissions:
@@ -19,3 +18,6 @@ commands:
     usage: /ping [player]
     permission: template.ping
     permission-message: You don't have permission!
+  joke:
+    description: Get a random joke
+    usage: /joke

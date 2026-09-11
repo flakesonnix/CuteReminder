@@ -11,6 +11,9 @@ commands:
     usage: /ping [player]
     permission: template.ping
     permission-message: You don't have permission!
+  joke:
+    description: Get a random joke
+    usage: /joke
 permissions:
   template.ping:
     description: Use /ping for self

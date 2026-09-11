@@ -1,12 +1,8 @@
 plugins {
-    // Kotlin — template now fully Kotlin
     kotlin("jvm") version "2.0.21"
-    // IDEA — generates .idea/.iml via `gradle idea`, helps JetBrains import
+    kotlin("plugin.serialization") version "2.0.21"
     idea
-    // Formatter — Spotless + ktlint for Kotlin (nix fmt via flake.nix)
     id("com.diffplug.spotless") version "7.0.2"
-    // Shadow removed — manual fatJar used to avoid ASM 65 issue (shadow 8.1.1 can't read Java 21).
-    // If you want relocation, add org.gradle.shadow 8.3.x + re-enable relocate block below.
 }
 
 group = "com.example"
@@ -36,12 +32,20 @@ dependencies {
     // slf4j needed by HikariCP (Paper provides it but include for shade)
     implementation("org.slf4j:slf4j-api:2.0.16")
 
-    // Tests — JUnit5 + MockK (Kotlin native where possible, JVM for Paper API mocks)
+    // Tests — JUnit5 + MockK
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.3")
     testImplementation("io.mockk:mockk:1.13.12")
     testImplementation("org.assertj:assertj-core:3.26.3")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.11.3")
     testImplementation("io.papermc.paper:paper-api:$paperVersion")
+
+    // Ktor client + serialization for /joke
+    implementation("io.ktor:ktor-client-core:3.1.2")
+    implementation("io.ktor:ktor-client-cio:3.1.2")
+    implementation("io.ktor:ktor-client-content-negotiation:3.1.2")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:3.1.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
 }
 
 java {
