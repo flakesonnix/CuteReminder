@@ -7,7 +7,6 @@ import org.bukkit.Server
 import org.bukkit.command.Command
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
-import org.bukkit.plugin.java.JavaPlugin
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 

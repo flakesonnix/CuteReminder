@@ -7,7 +7,6 @@ import io.mockk.mockk
 import io.mockk.verify
 import java.io.File
 import java.util.UUID
-import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerJoinEvent
 import org.junit.jupiter.api.Test

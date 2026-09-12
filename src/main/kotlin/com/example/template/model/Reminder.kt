@@ -7,5 +7,5 @@ data class Reminder(
     var content: String,
     val firstSentAt: Instant,
     var lastSentAt: Instant,
-    var sendCount: Int
+    var sendCount: Int,
 )
