@@ -33,10 +33,7 @@
           jdk = pkgs.jdk21;
           gradle = pkgs.gradle_8;
 
-          idea =
-            if pkgs.jetbrains ? idea
-            then pkgs.jetbrains.idea
-            else pkgs.jetbrains.idea-community;
+          idea = if pkgs.jetbrains ? idea then pkgs.jetbrains.idea else pkgs.jetbrains.idea-community;
 
           nixFmt = pkgs.nixfmt;
           ktlint = pkgs.ktlint;
